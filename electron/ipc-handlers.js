@@ -2,6 +2,7 @@ const { ipcMain, shell, systemPreferences, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const constants = require('./constants');
+const nativeOutput = require('./native-output');
 
 // Import file handlers
 const fileHandlers = require('./file-handlers');
@@ -157,6 +158,21 @@ function registerIpcHandlers() {
       console.error('Error loading preferences:', error);
       return { success: false, error: error.message };
     }
+  });
+
+  // Native audio output controls
+  ipcMain.handle('native-output-start', (event, opts) => {
+    nativeOutput.start(opts);
+    return { success: true };
+  });
+
+  ipcMain.handle('native-output-stop', () => {
+    nativeOutput.stop();
+    return { success: true };
+  });
+
+  ipcMain.on('native-output-write', (event, buffer) => {
+    nativeOutput.write(buffer);
   });
 
   // Handle opening external URLs in default browser

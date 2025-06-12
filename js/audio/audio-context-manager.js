@@ -174,6 +174,7 @@ export class AudioContextManager {
             if (this.audioContext.audioWorklet) {
                 try {
                     await this.audioContext.audioWorklet.addModule(`${basePath}/plugins/audio-processor.js`);
+                    await this.audioContext.audioWorklet.addModule(`${basePath}/plugins/native-output-processor.js`);
                 } catch (error) {
                     console.error('Failed to load audio worklet module:', error);
                     throw new Error(`AudioWorklet failed to load: ${error.message}`);

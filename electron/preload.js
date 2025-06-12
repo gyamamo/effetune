@@ -98,7 +98,12 @@ contextBridge.exposeInMainWorld(
     
     // Check if file exists
     fileExists: (filePath) => ipcRenderer.invoke('fileExists', filePath),
-    
+
+    // Native audio output
+    startNativeOutput: (opts) => ipcRenderer.invoke('native-output-start', opts),
+    writeNativeAudio: (buffer) => ipcRenderer.send('native-output-write', buffer),
+    stopNativeOutput: () => ipcRenderer.invoke('native-output-stop'),
+
     // Save pipeline state to file
     savePipelineStateToFile: (pipelineState) => ipcRenderer.invoke('save-pipeline-state-to-file', pipelineState),
     
