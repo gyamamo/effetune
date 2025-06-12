@@ -45,6 +45,11 @@ class PluginProcessor extends AudioWorkletProcessor {
             _silenceThresholdAmplitude: Math.pow(10, -84 / 20)
         };
 
+        // Processing time measurement
+        this._accumProcessTime = 0;
+        this._processCount = 0;
+        this._lastProcessReport = performance.now();
+
         // Message handler
         this.port.onmessage = (event) => {
             const data = event.data;
@@ -169,6 +174,7 @@ class PluginProcessor extends AudioWorkletProcessor {
 
     // Optimized process method
     process(inputs, outputs, parameters) {
+        const startTime = performance.now();
         const input = inputs[0];
         const output = outputs[0];
 
@@ -183,6 +189,16 @@ class PluginProcessor extends AudioWorkletProcessor {
                 }
             }
             // Keep processor alive, even with no input, as input might appear later.
+            const endTime = performance.now();
+            this._accumProcessTime += endTime - startTime;
+            this._processCount++;
+            if (endTime - this._lastProcessReport >= 500) {
+                const avg = this._accumProcessTime / this._processCount;
+                this.port.postMessage({ type: 'processTime', avgProcessTime: avg });
+                this._accumProcessTime = 0;
+                this._processCount = 0;
+                this._lastProcessReport = endTime;
+            }
             return true;
         }
 
@@ -271,6 +287,18 @@ class PluginProcessor extends AudioWorkletProcessor {
 
             // IMPORTANT: Still need to advance the frame counter even when bypassed/sleeping
             this.currentFrame += blockSize;
+            {
+                const endTime = performance.now();
+                this._accumProcessTime += endTime - startTime;
+                this._processCount++;
+                if (endTime - this._lastProcessReport >= 500) {
+                    const avg = this._accumProcessTime / this._processCount;
+                    this.port.postMessage({ type: 'processTime', avgProcessTime: avg });
+                    this._accumProcessTime = 0;
+                    this._processCount = 0;
+                    this._lastProcessReport = endTime;
+                }
+            }
             return true; // Keep processor alive
         }
 
@@ -668,6 +696,18 @@ class PluginProcessor extends AudioWorkletProcessor {
 
         // --- 12. Return Status ---
         // Return true to keep the processor alive
+        {
+            const endTime = performance.now();
+            this._accumProcessTime += endTime - startTime;
+            this._processCount++;
+            if (endTime - this._lastProcessReport >= 500) {
+                const avg = this._accumProcessTime / this._processCount;
+                this.port.postMessage({ type: 'processTime', avgProcessTime: avg });
+                this._accumProcessTime = 0;
+                this._processCount = 0;
+                this._lastProcessReport = endTime;
+            }
+        }
         return true;
     }
 }
