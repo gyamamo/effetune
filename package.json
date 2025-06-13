@@ -14,7 +14,8 @@
     "build:mac:x64": "npm run clean && electron-builder --mac --x64 --publish never",
     "build:linux": "npm run clean && electron-builder --linux --publish never",
     "pack": "npm run clean && electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "postinstall": "electron-rebuild -w naudiodon"
   },
   "author": "Frieve",
   "license": "MIT",
@@ -31,6 +32,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "fs-extra": "^11.3.0",
+    "@electron/rebuild": "^3.7.0",
     "globals": "^16.0.0",
     "mkdirp": "^3.0.1",
     "png2icons": "^2.0.1",

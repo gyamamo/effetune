@@ -192,6 +192,11 @@ To customize the installer behavior:
    - Reinstall the application using the installer
    - Manually associate `.effetune_preset` files with the application
 
+3. **Native audio output crashes on start**:
+   - The PortAudio module must be rebuilt for your local Electron version
+   - Running `npm install` will automatically invoke `electron-rebuild`
+   - Or run `npx electron-rebuild -w naudiodon` manually after installing dependencies
+
 ## Distribution
 
 After building the application:
