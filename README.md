@@ -316,6 +316,7 @@ For optimal performance with nonlinear effects, it is recommended to use EffeTun
 Want to create your own audio plugins? Check out our [Plugin Development Guide](docs/plugin-development.md).
 Want to build a desktop app? Check out our [Build Guide](BUILD.md).
 If Electron fails to start with a `missing symbol` error, run `npm run rebuild`.
+If the issue persists, remove `node_modules/naudiodon` and reinstall. When PortAudio cannot load, the app falls back to the `speaker` module.
 
 ## Links
 

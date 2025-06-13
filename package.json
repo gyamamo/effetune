@@ -21,7 +21,8 @@
   "author": "Frieve",
   "license": "MIT",
   "dependencies": {
-    "naudiodon": "^2.3.0"
+    "naudiodon": "^2.3.0",
+    "speaker": "^0.5.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
