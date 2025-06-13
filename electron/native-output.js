@@ -14,7 +14,8 @@ function getPortAudio() {
     try {
       // Spawn a short-lived Node process to capture the loader error details.
       const result = spawnSync(process.execPath, ['-e', "require('naudiodon')"], {
-        encoding: 'utf8'
+        encoding: 'utf8',
+        env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }
       });
       if (result.stderr) {
         console.error('Native module error details:\n', result.stderr.trim());
