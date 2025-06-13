@@ -316,9 +316,9 @@ For optimal performance with nonlinear effects, it is recommended to use EffeTun
 Want to create your own audio plugins? Check out our [Plugin Development Guide](docs/plugin-development.md).
 Want to build a desktop app? Check out our [Build Guide](BUILD.md).
 If Electron fails to start with a `missing symbol` error, run `npm run rebuild`.
-This command runs `electron-rebuild -w naudiodon,speaker` to compile the native modules for your Electron version.
+This command runs `electron-rebuild -w node-portaudio,speaker` to compile the native modules for your Electron version.
 The application now prints the missing symbol name when the PortAudio binding fails to load.
-If rebuilding does not help, remove `node_modules/naudiodon` and reinstall. When PortAudio cannot load, the app falls back to the `speaker` module.
+If rebuilding does not help, remove `node_modules/node-portaudio` and reinstall. When PortAudio cannot load, the app falls back to the `speaker` module.
 
 ## Links
 

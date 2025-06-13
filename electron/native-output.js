@@ -8,12 +8,12 @@ function getPortAudio() {
   try {
     // Lazy-load so that missing native symbols don't abort the process immediately
     // when Electron has a different Node version
-    portAudio = require('naudiodon');
+    portAudio = require('node-portaudio');
   } catch (err) {
-    console.error('Failed to load naudiodon:', err);
+    console.error('Failed to load node-portaudio:', err);
     try {
       // Spawn a short-lived Node process to capture the loader error details.
-      const result = spawnSync(process.execPath, ['-e', "require('naudiodon')"], {
+      const result = spawnSync(process.execPath, ['-e', "require('node-portaudio')"], {
         encoding: 'utf8',
         env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }
       });

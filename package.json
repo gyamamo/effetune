@@ -15,13 +15,13 @@
     "build:linux": "npm run clean && electron-builder --linux --publish never",
     "pack": "npm run clean && electron-builder --dir",
     "dist": "electron-builder",
-    "rebuild": "electron-rebuild -w naudiodon,speaker",
+    "rebuild": "electron-rebuild -w node-portaudio,speaker",
     "postinstall": "npm run rebuild"
   },
   "author": "Frieve",
   "license": "MIT",
   "dependencies": {
-    "naudiodon": "^2.3.0",
+    "node-portaudio": "^1.0.0",
     "speaker": "^0.5.3"
   },
   "devDependencies": {
