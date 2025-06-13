@@ -196,7 +196,8 @@ To customize the installer behavior:
    - The PortAudio module must be rebuilt for your local Electron version
   - `npm install` automatically runs `npm run rebuild`
   - `npm run rebuild` runs `electron-rebuild -w naudiodon,speaker`
-  - Run this manually if you see a `missing symbol` error
+  - Run this manually if you see a `missing symbol` error. The application will
+    now print the missing symbol name to aid troubleshooting
    - If rebuilding does not help, delete `node_modules/naudiodon` and reinstall.
      The app will fall back to a slower JS implementation when PortAudio cannot load.
 

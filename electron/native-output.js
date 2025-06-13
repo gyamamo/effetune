@@ -1,6 +1,8 @@
 let portAudio;
 let Speaker;
 
+const { spawnSync } = require('child_process');
+
 function getPortAudio() {
   if (portAudio) return portAudio;
   try {
@@ -9,6 +11,17 @@ function getPortAudio() {
     portAudio = require('naudiodon');
   } catch (err) {
     console.error('Failed to load naudiodon:', err);
+    try {
+      // Spawn a short-lived Node process to capture the loader error details.
+      const result = spawnSync(process.execPath, ['-e', "require('naudiodon')"], {
+        encoding: 'utf8'
+      });
+      if (result.stderr) {
+        console.error('Native module error details:\n', result.stderr.trim());
+      }
+    } catch (childErr) {
+      console.error('Error while retrieving native error details:', childErr);
+    }
     console.error('Try running "npm run rebuild" to rebuild the native module.');
     portAudio = null;
   }
