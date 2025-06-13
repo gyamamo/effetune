@@ -8,6 +8,7 @@ function getPortAudio() {
     portAudio = require('naudiodon');
   } catch (err) {
     console.error('Failed to load naudiodon:', err);
+    console.error('Try running "npm run rebuild" to rebuild the native module.');
     portAudio = null;
   }
   return portAudio;

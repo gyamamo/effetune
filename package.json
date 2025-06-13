@@ -15,7 +15,8 @@
     "build:linux": "npm run clean && electron-builder --linux --publish never",
     "pack": "npm run clean && electron-builder --dir",
     "dist": "electron-builder",
-    "postinstall": "electron-rebuild -w naudiodon"
+    "rebuild": "electron-rebuild -w naudiodon",
+    "postinstall": "npm run rebuild"
   },
   "author": "Frieve",
   "license": "MIT",
