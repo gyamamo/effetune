@@ -192,6 +192,15 @@ To customize the installer behavior:
    - Reinstall the application using the installer
    - Manually associate `.effetune_preset` files with the application
 
+3. **Native audio output crashes on start**:
+   - The PortAudio module must be rebuilt for your local Electron version
+  - `npm install` automatically runs `npm run rebuild`
+  - `npm run rebuild` runs `electron-rebuild -w node-portaudio,speaker`
+  - Run this manually if you see a `missing symbol` error. The application will
+    now print the missing symbol name to aid troubleshooting
+  - If rebuilding does not help, delete `node_modules/node-portaudio` and reinstall.
+     The app will fall back to a slower JS implementation when PortAudio cannot load.
+
 ## Distribution
 
 After building the application:

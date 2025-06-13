@@ -14,10 +14,16 @@
     "build:mac:x64": "npm run clean && electron-builder --mac --x64 --publish never",
     "build:linux": "npm run clean && electron-builder --linux --publish never",
     "pack": "npm run clean && electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "rebuild": "electron-rebuild -w node-portaudio,speaker",
+    "postinstall": "npm run rebuild"
   },
   "author": "Frieve",
   "license": "MIT",
+  "dependencies": {
+    "node-portaudio": "^1.0.0",
+    "speaker": "^0.5.3"
+  },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
     "cross-env": "^7.0.3",
@@ -28,6 +34,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "fs-extra": "^11.3.0",
+    "@electron/rebuild": "^3.7.0",
     "globals": "^16.0.0",
     "mkdirp": "^3.0.1",
     "png2icons": "^2.0.1",

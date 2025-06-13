@@ -15,6 +15,8 @@ export class AudioIOManager {
         this.defaultDestinationConnection = null;
         this.silenceNode = null;
         this.useMultichannelOutput = false;
+        this.useNativeOutput = false;
+        this.nativeOutputNode = null;
     }
     
     /**
@@ -182,20 +184,29 @@ export class AudioIOManager {
                 return '';
             }
             
-            // For standard stereo mode, use MediaStreamDestination
-            try {
-                if (typeof this.contextManager.audioContext.createMediaStreamDestination === 'function') {
-                    this.destinationNode = this.contextManager.audioContext.createMediaStreamDestination();
-                } else {
-                    console.warn('createMediaStreamDestination is not supported in this browser');
-                    // Fall back to default destination only
-                    this.destinationNode = null;
-                }
-            } catch (error) {
-                console.error('Error creating MediaStreamDestination:', error);
-                // Fall back to default destination only
+            // For standard stereo mode
+            if (window.electronAPI && window.electronIntegration) {
+                await window.electronAPI.startNativeOutput({
+                    sampleRate: this.contextManager.audioContext.sampleRate,
+                    channelCount: this.contextManager.audioContext.destination.channelCount
+                });
+                this.useNativeOutput = true;
                 this.destinationNode = null;
-                return `Audio Error: Failed to create audio destination: ${error.message}`;
+                return '';
+            } else {
+                // Use MediaStreamDestination in browser
+                try {
+                    if (typeof this.contextManager.audioContext.createMediaStreamDestination === 'function') {
+                        this.destinationNode = this.contextManager.audioContext.createMediaStreamDestination();
+                    } else {
+                        console.warn('createMediaStreamDestination is not supported in this browser');
+                        this.destinationNode = null;
+                    }
+                } catch (error) {
+                    console.error('Error creating MediaStreamDestination:', error);
+                    this.destinationNode = null;
+                    return `Audio Error: Failed to create audio destination: ${error.message}`;
+                }
             }
             
             // For Electron, prepare audio output device (only in stereo mode)
@@ -463,6 +474,28 @@ export class AudioIOManager {
                     console.error('Error connecting multichannel output:', error);
                     return `Audio Error: Failed to connect multichannel output: ${error.message}`;
                 }
+            } else if (this.useNativeOutput) {
+                try {
+                    this.nativeOutputNode = new AudioWorkletNode(this.contextManager.audioContext, 'native-output-processor', {
+                        numberOfInputs: 1,
+                        numberOfOutputs: 1,
+                        outputChannelCount: [this.contextManager.audioContext.destination.channelCount]
+                    });
+                    this.contextManager.workletNode.connect(this.nativeOutputNode);
+                    // Connect to a silent gain node to keep context alive
+                    const gain = this.contextManager.audioContext.createGain();
+                    gain.gain.value = 0;
+                    this.nativeOutputNode.connect(gain).connect(this.contextManager.audioContext.destination);
+
+                    this.nativeOutputNode.port.onmessage = (e) => {
+                        if (e.data?.type === 'audio') {
+                            window.electronAPI.writeNativeAudio(e.data.buffer);
+                        }
+                    };
+                } catch (error) {
+                    console.error('Error connecting native output:', error);
+                    return `Audio Error: Failed to connect native output: ${error.message}`;
+                }
             } else if (this.destinationNode) {
                 // Stereo mode with device selection - connect to MediaStreamDestination
                 try {
@@ -564,7 +597,21 @@ export class AudioIOManager {
             this.stream.getTracks().forEach(track => track.stop());
             this.stream = null;
         }
-        
+
+        if (this.useNativeOutput && window.electronAPI && window.electronIntegration) {
+            window.electronAPI.stopNativeOutput();
+            this.useNativeOutput = false;
+        }
+
+        if (this.nativeOutputNode) {
+            try {
+                this.nativeOutputNode.disconnect();
+            } catch (error) {
+                console.warn('Error disconnecting native output node:', error);
+            }
+            this.nativeOutputNode = null;
+        }
+
         // Clear nodes
         this.sourceNode = null;
         this.destinationNode = null;
