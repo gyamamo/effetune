@@ -15,7 +15,7 @@
     "build:linux": "npm run clean && electron-builder --linux --publish never",
     "pack": "npm run clean && electron-builder --dir",
     "dist": "electron-builder",
-    "rebuild": "electron-rebuild -w naudiodon -w speaker",
+    "rebuild": "electron-rebuild -w naudiodon,speaker",
     "postinstall": "npm run rebuild"
   },
   "author": "Frieve",

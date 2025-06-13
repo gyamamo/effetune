@@ -194,9 +194,9 @@ To customize the installer behavior:
 
 3. **Native audio output crashes on start**:
    - The PortAudio module must be rebuilt for your local Electron version
-   - `npm install` automatically runs `npm run rebuild`
-   - `npm run rebuild` also rebuilds the `speaker` fallback module
-   - Run `npm run rebuild` manually if you see a `missing symbol` error
+  - `npm install` automatically runs `npm run rebuild`
+  - `npm run rebuild` runs `electron-rebuild -w naudiodon,speaker`
+  - Run this manually if you see a `missing symbol` error
    - If rebuilding does not help, delete `node_modules/naudiodon` and reinstall.
      The app will fall back to a slower JS implementation when PortAudio cannot load.
 
